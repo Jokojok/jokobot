@@ -1,43 +1,45 @@
-let Discord = require('discord.js');
-let auth = require('./auth.json');
-let config = require('./config.json');
+const Discord = require('discord.js');
+const Enmap = require("enmap");
+const fs = require("fs");
 
-// Initialize Discord client
-let client = new Discord.Client();
+const client = new Discord.Client();
+const auth = require('./auth.json');
+const config = require('./config.json');
+client.config = config;
 
-client.on('ready', () => {
-    console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
-    client.user.setActivity(`Serving ${client.guilds.size} servers`);
+const prefix = config.prefix;
+
+// This loop reads the /events/ folder and attaches each event file to the appropriate event.
+fs.readdir("./events/", (err, files) => {
+    if (err) return console.error(err);
+    files.forEach(file => {
+        if (!file.endsWith(".js")) return;
+
+        const event = require(`./events/${file}`);
+        let eventName = file.split(".")[0];
+
+        client.on(eventName, event.bind(null, client));
+        delete require.cache[require.resolve(`./events/${file}`)];
+    });
 });
 
-client.on('message', async message => {
-    if (!message.content.startsWith(config.prefix) || message.author.bot) return;
+client.commands = new Enmap();
 
-    let args = message.content.substring(1).split(' ');
-    let cmd = args[0];
+fs.readdir("./commands/", (err, files) => {
+  if (err) return console.error(err);
+  files.forEach(file => {
+    if (!file.endsWith(".js")) return;
 
-    args = args.splice(1);
-    switch (cmd) {
-        case 'ping':
-            message.reply("I'm alive !");
-            break;
-        case 'loop':
-            message.channel.send("!loop");
-            break;
-        // Just add any case commands if you want to..
-    }
-});
+    // Load the command file itself
+    const props = require(`./commands/${file}`);
 
-client.on("guildCreate", guild => {
-    // This event triggers when the bot joins a guild.
-    console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-    client.user.setActivity(`Serving ${client.guilds.size} servers`);
-});
+    // Get just the command name from the file name
+    let commandName = file.split(".")[0];
+    console.log(`Attempting to load command ${commandName}`);
 
-client.on("guildDelete", guild => {
-    // this event triggers when the bot is removed from a guild.
-    console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-    client.user.setActivity(`Serving ${client.guilds.size} servers`);
+    // Here we simply store the whole thing in the command Enmap. We're not running it right now.
+    client.commands.set(commandName, props);
+  });
 });
 
 client.login(auth.token);
