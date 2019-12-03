@@ -3,9 +3,11 @@ const Enmap = require("enmap");
 const fs = require("fs");
 
 const client = new Discord.Client();
+const embed = new Discord.RichEmbed();
 const auth = require('./auth.json');
 const config = require('./config.json');
 client.config = config;
+client.embed = embed;
 
 const prefix = config.prefix;
 
