@@ -5,14 +5,24 @@ const fs = require("fs");
 const client = new Discord.Client();
 const embed = new Discord.RichEmbed();
 const auth = require('./auth.json');
-const config = require('./config.json');
+client.embed = embed;
+
 client.commands = new Enmap({
     name: "commands"
 });
-client.config = config;
-client.embed = embed;
+client.settings = new Enmap({
+    name: "settings",
+    cloneLevel: 'deep'
+});
 
-const prefix = config.prefix;
+client.defaultSettings = {
+    prefix: "!",
+    logChannel: "logs",
+    modRole: "Moderator",
+    adminRole: "Administrator",
+    welcomeChannel: "welcome",
+    welcomeMessage: "Say hello to {{user}}, everyone!"
+}
 
 // This loop reads the /events/ folder and attaches each event file to the appropriate event.
 fs.readdir("./events/", (err, files) => {

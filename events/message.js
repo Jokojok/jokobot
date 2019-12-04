@@ -1,6 +1,8 @@
 module.exports = (client, message) => {
-    const prefix = client.config.prefix;
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    const guildConf = client.settings.ensure(message.guild.id, client.defaultSettings);
+    const prefix = guildConf.prefix;
+
+    if (!message.content.startsWith(prefix) || !message.guild || message.author.bot) return;
 
     let args = message.content.substring(prefix.length).trim().split(/ +/g);
     let supArgs = [];
@@ -9,7 +11,7 @@ module.exports = (client, message) => {
     // Prepare the possibilities of supplementary arguments
     let possibleSupArgs = message.content.substring(prefix.length).trim().split(/\-+/g);
     for (i = 1; i < possibleSupArgs.length; i++) {
-        supArgs[i-1] = possibleSupArgs[i].trim().split(/ +/g);
+        supArgs[i - 1] = possibleSupArgs[i].trim().split(/ +/g);
     }
 
     // Grab the command data from the client.commands Enmap
