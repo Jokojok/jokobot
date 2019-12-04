@@ -6,6 +6,9 @@ const client = new Discord.Client();
 const embed = new Discord.RichEmbed();
 const auth = require('./auth.json');
 const config = require('./config.json');
+client.commands = new Enmap({
+    name: "commands"
+});
 client.config = config;
 client.embed = embed;
 
@@ -25,23 +28,21 @@ fs.readdir("./events/", (err, files) => {
     });
 });
 
-client.commands = new Enmap();
-
 fs.readdir("./commands/", (err, files) => {
-  if (err) return console.error(err);
-  files.forEach(file => {
-    if (!file.endsWith(".js")) return;
+    if (err) return console.error(err);
+    files.forEach(file => {
+        if (!file.endsWith(".js")) return;
 
-    // Load the command file itself
-    const props = require(`./commands/${file}`);
+        // Load the command file itself
+        const props = require(`./commands/${file}`);
 
-    // Get just the command name from the file name
-    let commandName = file.split(".")[0];
-    console.log(`Attempting to load command ${commandName}`);
+        // Get just the command name from the file name
+        let commandName = file.split(".")[0];
+        console.log(`Attempting to load command ${commandName}`);
 
-    // Here we simply store the whole thing in the command Enmap. We're not running it right now.
-    client.commands.set(commandName, props);
-  });
+        // Here we simply store the whole thing in the command Enmap. We're not running it right now.
+        client.commands.set(commandName, props);
+    });
 });
 
 client.login(auth.token);

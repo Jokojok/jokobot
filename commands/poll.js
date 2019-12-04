@@ -41,3 +41,8 @@ exports.run = (client, message) => {
             .then(message.delete());
     }
 }
+
+
+exports.usage = "!poll Question[;Answer...]";
+
+exports.description = "Create a poll to get the opinion of people in your chan ; they can vote by reacting. Without any answer, it will be a Yes/No poll.";

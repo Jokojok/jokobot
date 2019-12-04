@@ -14,8 +14,13 @@ exports.run = (client, message, [cleanNumber, ...reason]) => {
                 message.channel.send(`Cleaned ${cleanNumber} messages by ${message.author.username}`);
             }
             else {
-                message.channel.send(`Cleaned ${cleanNumber} messages by ${message.author.username} or this reason :\n\`${reason}\``);
+                message.channel.send(`Cleaned ${cleanNumber} messages by ${message.author.username} or this reason :\n\`${reason.join(" ")}\``);
             }
         })
         .catch(console.error);
 }
+
+
+exports.usage = "!clean numberToClean [reason]";
+
+exports.description = "Clean numberToClean message then show who has cleaned how much message ; you might add a reason.";

@@ -5,12 +5,14 @@
     "main": "bot.js",
     "author": "Jokojok | Vranken Joachim",
     "dependencies": {
+        "better-sqlite-pool": "^0.2.2",
         "discord.js": "^11.5.1",
         "dotenv": "^8.2.0",
         "enmap": "^5.2.3",
         "fs": "0.0.1-security"
     },
     "devDependencies": {
+        "node-gyp": "^6.0.1",
         "nodemon": "^2.0.1"
     }
 }
