@@ -9,11 +9,13 @@ exports.run = (client, message, [setting, ...args]) => {
         message.channel.send(`The following are the server's current configuration:
         \`\`\`${configProps}\`\`\``);
     }
+    // Setting something existing
     else if (args.length > 0) {
         if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You must be an Administrator to use this command.");
 
         const [prop, ...value] = [setting, args];
 
+        // Setting not existing
         if (!client.settings.has(message.guild.id, prop)) {
             return message.reply("This key is not in the configuration.");
         }
@@ -22,6 +24,7 @@ exports.run = (client, message, [setting, ...args]) => {
 
         message.channel.send(`Guild configuration item \`${prop}\` has been changed to:\n\`${value.join(" ")}\``);
     }
+    // Not enough argument
     else {
         message.reply("Missing one or more arguments.");
     }
