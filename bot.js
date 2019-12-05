@@ -14,6 +14,9 @@ client.settings = new Enmap({
     name: "settings",
     cloneLevel: 'deep'
 });
+client.levels = new Enmap({
+    name: "levels"
+});
 
 client.defaultSettings = {
     prefix: "!",
